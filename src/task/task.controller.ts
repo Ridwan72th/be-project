@@ -2,7 +2,8 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestj
 import { title } from 'process';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTaskFilterDto } from './dto/get-task-filter.dto';
-import { ETaskStatus, ITask } from './task.model';
+import { UpdateTaskStatusDto } from './dto/update-task.dto';
+import { ITask } from './task.model';
 import { TaskService } from './task.service';
 
 @Controller('task')
@@ -12,7 +13,6 @@ export class TaskController {
 
     @Get()
     getTask(@Query() filterDto: GetTaskFilterDto): ITask[] {
-
         if (Object.keys(filterDto).length) {
             return this.taskService.getTaskWithFilter(filterDto)
         }
@@ -41,7 +41,8 @@ export class TaskController {
 
     @Patch('/:id/status')
     updateTaskStatus(@Param('id') id: string,
-        @Body('status') status: ETaskStatus): ITask {
+        @Body() updateTaskStatus: UpdateTaskStatusDto): ITask {
+        const { status } = updateTaskStatus;
         return this.taskService.updateTaskStatus(id, status)
     }
 
